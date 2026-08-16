@@ -1,6 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+// Supabase auth middleware for /admin routes
+
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
 
