@@ -10,6 +10,7 @@ export type ProductoInput = {
   precio: number;
   categoria: string | null;
   activo: boolean;
+  destacado: boolean;
   talles: Record<string, number>;
   imagenes: string[];
 };

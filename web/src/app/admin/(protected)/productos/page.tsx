@@ -119,6 +119,11 @@ export default async function ProductosPage({
                   <span className="text-sm font-semibold">
                     {formatoPrecio.format(producto.precio)}
                   </span>
+                  {producto.destacado && (
+                    <span className="rounded-full border border-gold px-2.5 py-1 text-xs uppercase tracking-[0.1em] text-gold">
+                      destacado
+                    </span>
+                  )}
                   <span
                     className={`rounded-full border px-2.5 py-1 text-xs uppercase tracking-[0.1em] ${
                       producto.activo

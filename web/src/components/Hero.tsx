@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import FadeIn from "@/components/FadeIn";
 
 export default function Hero() {
@@ -19,12 +20,12 @@ export default function Hero() {
             carrito en simples pasos.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <a
-              href="#catalogo"
+            <Link
+              href="/coleccion"
               className="rounded-md bg-primary px-6 py-3 text-sm font-medium uppercase tracking-wide text-primary-foreground transition hover:-translate-y-0.5 hover:opacity-90"
             >
               Ver catálogo
-            </a>
+            </Link>
             <a
               href="#artesania"
               className="rounded-md border-2 border-primary px-6 py-3 text-sm font-medium uppercase tracking-wide text-primary transition hover:-translate-y-0.5 hover:bg-secondary"
@@ -35,8 +36,8 @@ export default function Hero() {
         </FadeIn>
 
         <FadeIn delay={150} className="relative mb-12 sm:mb-8">
-          <a
-            href="#catalogo"
+          <Link
+            href="/coleccion"
             aria-label="Ver catálogo"
             className="group relative block aspect-[4/5] overflow-hidden rounded-2xl"
           >
@@ -48,7 +49,7 @@ export default function Hero() {
               sizes="(min-width: 1024px) 40vw, 90vw"
               className="object-cover transition duration-300 group-hover:scale-105"
             />
-          </a>
+          </Link>
 
           <div className="absolute -bottom-6 left-6 flex items-center gap-3 rounded-xl border-2 border-gold bg-card px-4 py-3 shadow-lg sm:left-8">
             <span className="font-serif text-2xl leading-none">4.9</span>

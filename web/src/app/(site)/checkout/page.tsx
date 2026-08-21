@@ -66,7 +66,7 @@ export default function CheckoutPage() {
           Pedido #{pedidoId.slice(0, 8)}
         </p>
         <Link
-          href="/"
+          href="/coleccion"
           className="mt-8 text-sm font-medium underline underline-offset-4"
         >
           Volver al catálogo
@@ -82,7 +82,7 @@ export default function CheckoutPage() {
         <p className="mt-3 text-sm text-muted-foreground">
           Agregá productos al carrito antes de finalizar la compra.
         </p>
-        <Link href="/" className="mt-8 text-sm font-medium underline underline-offset-4">
+        <Link href="/coleccion" className="mt-8 text-sm font-medium underline underline-offset-4">
           Ver catálogo
         </Link>
       </main>

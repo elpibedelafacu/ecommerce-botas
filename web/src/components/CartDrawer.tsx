@@ -77,7 +77,7 @@ export default function CartDrawer() {
               Todavía no agregaste productos.
             </p>
             <Link
-              href="/"
+              href="/coleccion"
               onClick={cerrarCarrito}
               className="text-sm font-medium underline underline-offset-4"
             >

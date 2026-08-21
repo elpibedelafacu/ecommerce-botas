@@ -4,5 +4,5 @@ export function buildCatalogHref(params: Record<string, string | undefined>) {
     if (value) search.set(key, value);
   }
   const qs = search.toString();
-  return qs ? `/?${qs}` : "/";
+  return qs ? `/coleccion?${qs}` : "/coleccion";
 }

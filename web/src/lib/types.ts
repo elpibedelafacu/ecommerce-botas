@@ -7,6 +7,7 @@ export type Product = {
   imagenes: string[];
   categoria: string | null;
   activo: boolean;
+  destacado: boolean;
   created_at: string;
 };
 

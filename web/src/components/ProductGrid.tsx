@@ -37,8 +37,8 @@ export default function ProductGrid({
   if (porCategoria.has(SIN_CATEGORIA)) secciones.push(SIN_CATEGORIA);
 
   return (
-    <section id="catalogo" className="mx-auto max-w-6xl px-4 py-16">
-      <h2 className="font-serif text-2xl">Catálogo</h2>
+    <section className="mx-auto max-w-6xl px-4 py-16">
+      <h1 className="font-serif text-3xl">Colección</h1>
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <CategoryFilter categorias={categorias} activa={categoria} talle={talle} />

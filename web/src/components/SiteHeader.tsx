@@ -11,11 +11,11 @@ export default function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
       <div className="relative mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
         <nav className="hidden gap-6 text-xs uppercase tracking-[0.15em] text-muted-foreground sm:flex">
-          <a href="#catalogo" className="group relative pb-0.5 transition hover:text-foreground">
+          <Link href="/coleccion" className="group relative pb-0.5 transition hover:text-foreground">
             Colección
             <span className="absolute inset-x-0 -bottom-0.5 h-px w-0 bg-gold transition-all duration-300 group-hover:w-full" />
-          </a>
-          <a href="#artesania" className="group relative pb-0.5 transition hover:text-foreground">
+          </Link>
+          <a href="/#artesania" className="group relative pb-0.5 transition hover:text-foreground">
             Artesanía
             <span className="absolute inset-x-0 -bottom-0.5 h-px w-0 bg-gold transition-all duration-300 group-hover:w-full" />
           </a>

@@ -33,6 +33,7 @@ export default function ProductoForm({
   const [precio, setPrecio] = useState(String(initialProduct?.precio ?? ""));
   const [categoria, setCategoria] = useState(initialProduct?.categoria ?? "");
   const [activo, setActivo] = useState(initialProduct?.activo ?? true);
+  const [destacado, setDestacado] = useState(initialProduct?.destacado ?? false);
   const [filasTalles, setFilasTalles] = useState<TalleRow[]>(
     tallesAFilas(initialProduct?.talles ?? {})
   );
@@ -131,6 +132,7 @@ export default function ProductoForm({
       precio: precioNum,
       categoria: categoria.trim() || null,
       activo,
+      destacado,
       talles,
       imagenes,
     };
@@ -230,7 +232,17 @@ export default function ProductoForm({
             onChange={(e) => setActivo(e.target.checked)}
             className="h-4 w-4"
           />
-          Activo (visible en el catálogo)
+          Activo (visible en la tienda)
+        </label>
+
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={destacado}
+            onChange={(e) => setDestacado(e.target.checked)}
+            className="h-4 w-4"
+          />
+          Destacado (aparece en la home)
         </label>
       </div>
 
