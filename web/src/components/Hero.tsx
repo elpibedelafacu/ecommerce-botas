@@ -1,46 +1,67 @@
 import Image from "next/image";
+import FadeIn from "@/components/FadeIn";
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden border-b border-border">
-      <Image
-        src="https://jrlztkgegfvbudbqqkti.supabase.co/storage/v1/object/public/products/hero-background.jpg"
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover"
-      />
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-[linear-gradient(to_bottom,color-mix(in_oklch,var(--background)_55%,transparent),color-mix(in_oklch,var(--background)_88%,transparent)_70%,var(--background))]"
-      />
+    <section className="border-b border-border">
+      <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 sm:py-24 lg:grid-cols-2 lg:gap-16">
+        <FadeIn>
+          <span className="inline-flex items-center gap-2 rounded-full bg-secondary px-3 py-1 text-xs uppercase tracking-[0.15em] text-secondary-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden />
+            Cuero genuino · Hecho para durar
+          </span>
 
-      <div className="relative mx-auto max-w-6xl px-4 py-24 text-center sm:py-32">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-          Botas Store
-        </p>
-        <h1 className="mx-auto mt-4 max-w-2xl text-balance font-serif text-4xl leading-tight sm:text-5xl">
-          Botas de cuero, hechas para durar
-        </h1>
-        <p className="mx-auto mt-4 max-w-md text-balance text-sm text-muted-foreground sm:text-base">
-          Diseño clásico y materiales de calidad. Elegí tu talle y sumalo al
-          carrito en simples pasos.
-        </p>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <h1 className="mt-5 text-balance font-serif text-4xl leading-tight sm:text-5xl">
+            Botas de cuero, hechas para durar
+          </h1>
+          <p className="mt-4 max-w-md text-balance text-sm text-muted-foreground sm:text-base">
+            Diseño clásico y materiales de calidad. Elegí tu talle y sumalo al
+            carrito en simples pasos.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <a
+              href="#catalogo"
+              className="rounded-md bg-primary px-6 py-3 text-sm font-medium uppercase tracking-wide text-primary-foreground transition hover:-translate-y-0.5 hover:opacity-90"
+            >
+              Ver catálogo
+            </a>
+            <a
+              href="#artesania"
+              className="rounded-md border-2 border-primary px-6 py-3 text-sm font-medium uppercase tracking-wide text-primary transition hover:-translate-y-0.5 hover:bg-secondary"
+            >
+              Nuestra artesanía
+            </a>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={150} className="relative mb-12 sm:mb-8">
           <a
             href="#catalogo"
-            className="rounded-md bg-primary px-6 py-3 text-sm font-medium uppercase tracking-wide text-primary-foreground transition hover:opacity-90"
+            aria-label="Ver catálogo"
+            className="group relative block aspect-[4/5] overflow-hidden rounded-2xl"
           >
-            Ver catálogo
+            <Image
+              src="https://jrlztkgegfvbudbqqkti.supabase.co/storage/v1/object/public/products/hero-background.jpg"
+              alt=""
+              fill
+              priority
+              sizes="(min-width: 1024px) 40vw, 90vw"
+              className="object-cover transition duration-300 group-hover:scale-105"
+            />
           </a>
-          <a
-            href="#artesania"
-            className="rounded-md border border-border bg-background/40 px-6 py-3 text-sm font-medium uppercase tracking-wide backdrop-blur transition hover:border-foreground/40"
-          >
-            Nuestra artesanía
-          </a>
-        </div>
+
+          <div className="absolute -bottom-6 left-6 flex items-center gap-3 rounded-xl border-2 border-gold bg-card px-4 py-3 shadow-lg sm:left-8">
+            <span className="font-serif text-2xl leading-none">4.9</span>
+            <div>
+              <span className="text-xs text-gold" aria-hidden>
+                ★★★★★
+              </span>
+              <p className="text-xs text-muted-foreground">
+                Valoración de clientes
+              </p>
+            </div>
+          </div>
+        </FadeIn>
       </div>
     </section>
   );

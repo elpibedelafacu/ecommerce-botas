@@ -2,6 +2,7 @@ import { supabase } from "@/lib/supabase";
 import type { Product } from "@/lib/types";
 import Hero from "@/components/Hero";
 import ProductGrid from "@/components/ProductGrid";
+import Testimonials from "@/components/Testimonials";
 import CraftSection from "@/components/CraftSection";
 
 export const revalidate = 60;
@@ -48,6 +49,7 @@ export default async function Home({
         talle={talle}
         error={!!error}
       />
+      <Testimonials />
       <CraftSection />
     </main>
   );

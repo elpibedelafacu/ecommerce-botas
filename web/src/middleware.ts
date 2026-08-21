@@ -30,8 +30,9 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const esLogin = request.nextUrl.pathname === "/admin/login";
+  const esResetPassword = request.nextUrl.pathname === "/admin/reset-password";
 
-  if (!user && !esLogin) {
+  if (!user && !esLogin && !esResetPassword) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin/login";
     return NextResponse.redirect(url);

@@ -90,7 +90,7 @@ export default function CartDrawer() {
               {items.map((item) => (
                 <li
                   key={`${item.productId}-${item.talle}`}
-                  className="flex items-center gap-3 py-4"
+                  className="animate-item-in flex items-center gap-3 py-4"
                 >
                   <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-md bg-gradient-to-br from-muted to-card">
                     {item.imagen ? (
@@ -113,7 +113,7 @@ export default function CartDrawer() {
                     <p className="mt-0.5 text-xs text-muted-foreground">
                       Talle {item.talle}
                     </p>
-                    <p className="mt-1 text-sm font-semibold">
+                    <p className="mt-1 text-sm font-semibold text-gold">
                       {formatoPrecio.format(item.precioUnit)}
                     </p>
                   </div>
@@ -149,14 +149,14 @@ export default function CartDrawer() {
             <div className="border-t border-border px-5 py-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Total</span>
-                <span className="text-lg font-semibold">
+                <span className="text-lg font-semibold text-gold">
                   {formatoPrecio.format(total)}
                 </span>
               </div>
               <Link
                 href="/checkout"
                 onClick={cerrarCarrito}
-                className="mt-4 block w-full rounded-md bg-primary px-4 py-3 text-center text-sm font-medium text-primary-foreground transition hover:opacity-90"
+                className="mt-4 block w-full rounded-md bg-primary px-4 py-3 text-center text-sm font-medium text-primary-foreground transition hover:-translate-y-0.5 hover:opacity-90"
               >
                 Finalizar compra
               </Link>

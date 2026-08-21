@@ -19,12 +19,18 @@ export default function ProductQuickView({
 }) {
   const { agregarItem } = useCart();
   const [talle, setTalle] = useState<string | null>(null);
+  const [productoAnterior, setProductoAnterior] = useState(product);
+  // seguimos mostrando el último producto mientras el modal se desvanece,
+  // así el contenido no desaparece de golpe antes de que termine la salida
+  const [mostrado, setMostrado] = useState(product);
 
   const abierto = product !== null;
 
-  useEffect(() => {
+  if (product !== productoAnterior) {
+    setProductoAnterior(product);
     setTalle(null);
-  }, [product]);
+    if (product) setMostrado(product);
+  }
 
   useEffect(() => {
     if (!abierto) return;
@@ -39,41 +45,51 @@ export default function ProductQuickView({
     };
   }, [abierto, onClose]);
 
-  if (!product) return null;
+  if (!mostrado) return null;
 
-  const tallesDisponibles = Object.entries(product.talles ?? {})
+  const tallesDisponibles = Object.entries(mostrado.talles ?? {})
     .filter(([, stock]) => stock > 0)
     .map(([t]) => t)
     .sort((a, b) => Number(a) - Number(b));
 
-  const stockTalle = talle ? product.talles[talle] ?? 0 : 0;
+  const stockTalle = talle ? mostrado.talles[talle] ?? 0 : 0;
   const sinStock = tallesDisponibles.length === 0;
 
   function handleAdd() {
     if (!talle) return;
     agregarItem({
-      productId: product!.id,
-      nombre: product!.nombre,
-      imagen: product!.imagenes?.[0] ?? null,
+      productId: mostrado!.id,
+      nombre: mostrado!.nombre,
+      imagen: mostrado!.imagenes?.[0] ?? null,
       talle,
       cantidad: 1,
-      precioUnit: product!.precio,
+      precioUnit: mostrado!.precio,
     });
     onClose();
   }
 
   return (
-    <div className="fixed inset-0 z-50">
-      <div onClick={onClose} className="absolute inset-0 bg-black/70" />
+    <div
+      aria-hidden={!abierto}
+      className={`fixed inset-0 z-50 ${abierto ? "" : "pointer-events-none"}`}
+    >
+      <div
+        onClick={onClose}
+        className={`absolute inset-0 bg-black/70 transition-opacity duration-300 ${
+          abierto ? "opacity-100" : "opacity-0"
+        }`}
+      />
 
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-4">
         <div
           role="dialog"
-          aria-label={product.nombre}
-          className="pointer-events-auto grid max-h-[90vh] w-full max-w-3xl grid-cols-1 overflow-y-auto rounded-lg bg-card text-card-foreground shadow-2xl sm:grid-cols-2 sm:overflow-visible"
+          aria-label={mostrado.nombre}
+          className={`pointer-events-auto grid max-h-[90vh] w-full max-w-3xl grid-cols-1 overflow-y-auto rounded-lg bg-card text-card-foreground shadow-2xl transition-all duration-300 ease-out sm:grid-cols-2 sm:overflow-visible ${
+            abierto ? "scale-100 opacity-100" : "scale-95 opacity-0"
+          }`}
         >
           <div className="relative sm:h-full">
-            <ProductGallery imagenes={product.imagenes} nombre={product.nombre} />
+            <ProductGallery imagenes={mostrado.imagenes} nombre={mostrado.nombre} />
           </div>
 
           <div className="relative flex flex-col p-6 sm:overflow-y-auto">
@@ -97,19 +113,19 @@ export default function ProductQuickView({
               </svg>
             </button>
 
-            {product.categoria && (
+            {mostrado.categoria && (
               <p className="text-xs uppercase tracking-[0.15em] text-muted-foreground">
-                {product.categoria}
+                {mostrado.categoria}
               </p>
             )}
-            <h2 className="mt-2 font-serif text-3xl">{product.nombre}</h2>
-            <p className="mt-3 text-lg font-semibold">
-              {formatoPrecio.format(product.precio)}
+            <h2 className="mt-2 font-serif text-3xl">{mostrado.nombre}</h2>
+            <p className="mt-3 text-lg font-semibold text-gold">
+              {formatoPrecio.format(mostrado.precio)}
             </p>
 
-            {product.descripcion && (
+            {mostrado.descripcion && (
               <p className="mt-4 whitespace-pre-line text-sm text-muted-foreground">
-                {product.descripcion}
+                {mostrado.descripcion}
               </p>
             )}
 

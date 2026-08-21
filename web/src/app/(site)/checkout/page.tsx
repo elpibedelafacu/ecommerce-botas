@@ -169,7 +169,7 @@ export default function CheckoutPage() {
                   Talle {item.talle} · x{item.cantidad}
                 </p>
               </div>
-              <span className="font-medium">
+              <span className="font-medium text-gold">
                 {formatoPrecio.format(item.precioUnit * item.cantidad)}
               </span>
             </li>
@@ -177,7 +177,7 @@ export default function CheckoutPage() {
         </ul>
         <div className="mt-4 flex items-center justify-between">
           <span className="text-sm font-medium">Total</span>
-          <span className="text-lg font-semibold">{formatoPrecio.format(total)}</span>
+          <span className="text-lg font-semibold text-gold">{formatoPrecio.format(total)}</span>
         </div>
       </div>
     </main>

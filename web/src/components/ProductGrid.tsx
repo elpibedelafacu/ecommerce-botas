@@ -6,6 +6,7 @@ import ProductCard from "@/components/ProductCard";
 import ProductQuickView from "@/components/ProductQuickView";
 import CategoryFilter from "@/components/CategoryFilter";
 import TalleFilter from "@/components/TalleFilter";
+import FadeIn from "@/components/FadeIn";
 
 export default function ProductGrid({
   products,
@@ -46,12 +47,13 @@ export default function ProductGrid({
       )}
 
       <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-        {products?.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            onSelect={() => setSeleccionado(product)}
-          />
+        {products?.map((product, i) => (
+          <FadeIn key={product.id} delay={(i % 3) * 80}>
+            <ProductCard
+              product={product}
+              onSelect={() => setSeleccionado(product)}
+            />
+          </FadeIn>
         ))}
       </div>
 
