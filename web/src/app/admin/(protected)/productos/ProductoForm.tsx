@@ -20,8 +20,10 @@ function tallesAFilas(talles: Record<string, number>): TalleRow[] {
 
 export default function ProductoForm({
   initialProduct,
+  categoriasExistentes = [],
 }: {
   initialProduct?: Product;
+  categoriasExistentes?: string[];
 }) {
   const router = useRouter();
   const esEdicion = !!initialProduct;
@@ -191,13 +193,20 @@ export default function ProductoForm({
         </label>
 
         <label className="flex flex-col gap-1.5 text-sm">
-          Categoría
+          Categoría (mini sección del catálogo)
           <input
             type="text"
+            list="categorias-existentes"
             value={categoria}
             onChange={(e) => setCategoria(e.target.value)}
+            placeholder="Ej: Urbana, Trekking..."
             className="rounded-md border border-input bg-transparent px-3 py-2 text-sm"
           />
+          <datalist id="categorias-existentes">
+            {categoriasExistentes.map((c) => (
+              <option key={c} value={c} />
+            ))}
+          </datalist>
         </label>
 
         <label className="flex flex-col gap-1.5 text-sm">

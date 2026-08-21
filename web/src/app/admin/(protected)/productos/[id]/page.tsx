@@ -20,6 +20,11 @@ export default async function EditarProductoPage({
 
   if (!producto) notFound();
 
+  const { data: filas } = await supabase.from("products").select("categoria");
+  const categoriasExistentes = Array.from(
+    new Set((filas ?? []).map((f) => f.categoria).filter(Boolean))
+  ) as string[];
+
   return (
     <div>
       <Link
@@ -30,7 +35,7 @@ export default async function EditarProductoPage({
       </Link>
       <h1 className="mt-3 font-serif text-2xl">{producto.nombre}</h1>
       <div className="mt-6 max-w-2xl">
-        <ProductoForm initialProduct={producto} />
+        <ProductoForm initialProduct={producto} categoriasExistentes={categoriasExistentes} />
       </div>
     </div>
   );

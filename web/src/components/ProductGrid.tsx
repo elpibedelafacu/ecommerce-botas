@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import type { Product } from "@/lib/types";
-import ProductCard from "@/components/ProductCard";
 import ProductQuickView from "@/components/ProductQuickView";
 import CategoryFilter from "@/components/CategoryFilter";
 import TalleFilter from "@/components/TalleFilter";
-import FadeIn from "@/components/FadeIn";
+import CategoryCarousel from "@/components/CategoryCarousel";
+
+const SIN_CATEGORIA = "Otros";
 
 export default function ProductGrid({
   products,
@@ -24,6 +25,16 @@ export default function ProductGrid({
   error: boolean;
 }) {
   const [seleccionado, setSeleccionado] = useState<Product | null>(null);
+
+  const porCategoria = new Map<string, Product[]>();
+  for (const product of products ?? []) {
+    const key = product.categoria ?? SIN_CATEGORIA;
+    if (!porCategoria.has(key)) porCategoria.set(key, []);
+    porCategoria.get(key)!.push(product);
+  }
+
+  const secciones = categorias.filter((c) => porCategoria.has(c));
+  if (porCategoria.has(SIN_CATEGORIA)) secciones.push(SIN_CATEGORIA);
 
   return (
     <section id="catalogo" className="mx-auto max-w-6xl px-4 py-16">
@@ -46,16 +57,14 @@ export default function ProductGrid({
         </p>
       )}
 
-      <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-        {products?.map((product, i) => (
-          <FadeIn key={product.id} delay={(i % 3) * 80}>
-            <ProductCard
-              product={product}
-              onSelect={() => setSeleccionado(product)}
-            />
-          </FadeIn>
-        ))}
-      </div>
+      {secciones.map((titulo) => (
+        <CategoryCarousel
+          key={titulo}
+          titulo={titulo}
+          products={porCategoria.get(titulo)!}
+          onSelect={setSeleccionado}
+        />
+      ))}
 
       <ProductQuickView product={seleccionado} onClose={() => setSeleccionado(null)} />
     </section>

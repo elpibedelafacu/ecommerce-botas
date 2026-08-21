@@ -1,7 +1,14 @@
 import Link from "next/link";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 import ProductoForm from "../ProductoForm";
 
-export default function NuevoProductoPage() {
+export default async function NuevoProductoPage() {
+  const supabase = await createSupabaseServerClient();
+  const { data: filas } = await supabase.from("products").select("categoria");
+  const categoriasExistentes = Array.from(
+    new Set((filas ?? []).map((f) => f.categoria).filter(Boolean))
+  ) as string[];
+
   return (
     <div>
       <Link
@@ -12,7 +19,7 @@ export default function NuevoProductoPage() {
       </Link>
       <h1 className="mt-3 font-serif text-2xl">Nuevo producto</h1>
       <div className="mt-6 max-w-2xl">
-        <ProductoForm />
+        <ProductoForm categoriasExistentes={categoriasExistentes} />
       </div>
     </div>
   );
