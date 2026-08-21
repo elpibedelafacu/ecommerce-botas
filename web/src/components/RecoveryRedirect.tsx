@@ -8,9 +8,13 @@ export default function RecoveryRedirect() {
 
   useEffect(() => {
     const hash = window.location.hash;
+    const hashParams = new URLSearchParams(hash.slice(1));
     const params = new URLSearchParams(window.location.search);
     const esRecuperacion =
-      hash.includes("type=recovery") || params.get("type") === "recovery";
+      hash.includes("type=recovery") ||
+      params.get("type") === "recovery" ||
+      hashParams.has("error_code") ||
+      params.has("error_code");
 
     if (esRecuperacion) {
       router.replace(`/admin/reset-password${window.location.search}${hash}`);
