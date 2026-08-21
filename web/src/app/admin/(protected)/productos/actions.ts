@@ -14,17 +14,23 @@ export type ProductoInput = {
   imagenes: string[];
 };
 
-export async function crearProducto(data: ProductoInput) {
+export type ResultadoAccion = { error: string } | { error?: undefined };
+
+export async function crearProducto(data: ProductoInput): Promise<ResultadoAccion> {
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.from("products").insert(data);
 
-  if (error) throw new Error(error.message);
+  if (error) return { error: error.message };
 
   revalidatePath("/admin/productos");
   revalidatePath("/");
+  return {};
 }
 
-export async function actualizarProducto(id: string, data: ProductoInput) {
+export async function actualizarProducto(
+  id: string,
+  data: ProductoInput
+): Promise<ResultadoAccion> {
   const supabase = await createSupabaseServerClient();
   const { data: actualizados, error } = await supabase
     .from("products")
@@ -32,17 +38,21 @@ export async function actualizarProducto(id: string, data: ProductoInput) {
     .eq("id", id)
     .select("id");
 
-  if (error) throw new Error(error.message);
+  if (error) return { error: error.message };
   if (!actualizados || actualizados.length === 0) {
-    throw new Error("No se pudo actualizar el producto (¿la sesión sigue activa?)");
+    return { error: "No se pudo actualizar el producto (¿la sesión sigue activa?)" };
   }
 
   revalidatePath("/admin/productos");
   revalidatePath(`/admin/productos/${id}`);
   revalidatePath("/");
+  return {};
 }
 
-export async function eliminarProducto(id: string, imagenes: string[]) {
+export async function eliminarProducto(
+  id: string,
+  imagenes: string[]
+): Promise<ResultadoAccion> {
   const supabase = await createSupabaseServerClient();
 
   const paths = imagenes
@@ -58,11 +68,12 @@ export async function eliminarProducto(id: string, imagenes: string[]) {
     .eq("id", id)
     .select("id");
 
-  if (error) throw new Error(error.message);
+  if (error) return { error: error.message };
   if (!eliminados || eliminados.length === 0) {
-    throw new Error("No se pudo eliminar el producto (¿la sesión sigue activa?)");
+    return { error: "No se pudo eliminar el producto (¿la sesión sigue activa?)" };
   }
 
   revalidatePath("/admin/productos");
   revalidatePath("/");
+  return {};
 }

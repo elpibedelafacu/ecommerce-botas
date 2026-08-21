@@ -116,38 +116,44 @@ export default function ProductoForm({
       talles[fila.talla.trim()] = Number(fila.stock) || 0;
     }
 
+    const precioNum = Number(precio);
+    if (precioNum > 99999999.99) {
+      setError("El precio es demasiado alto (máximo $99.999.999,99).");
+      setEnviando(false);
+      return;
+    }
+
     const data = {
       nombre,
       descripcion: descripcion.trim() || null,
-      precio: Number(precio),
+      precio: precioNum,
       categoria: categoria.trim() || null,
       activo,
       talles,
       imagenes,
     };
 
-    try {
-      if (esEdicion) {
-        await actualizarProducto(initialProduct.id, data);
-      } else {
-        await crearProducto(data);
-      }
+    const resultado = esEdicion
+      ? await actualizarProducto(initialProduct.id, data)
+      : await crearProducto(data);
 
-      if (imagenesAEliminar.length > 0) {
-        const paths = imagenesAEliminar
-          .map(extractProductImagePath)
-          .filter((p): p is string => p !== null);
-        if (paths.length > 0) {
-          await createSupabaseBrowserClient().storage.from("products").remove(paths);
-        }
-      }
-
-      router.push("/admin/productos");
-      router.refresh();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Error al guardar el producto");
+    if (resultado.error) {
+      setError(resultado.error);
       setEnviando(false);
+      return;
     }
+
+    if (imagenesAEliminar.length > 0) {
+      const paths = imagenesAEliminar
+        .map(extractProductImagePath)
+        .filter((p): p is string => p !== null);
+      if (paths.length > 0) {
+        await createSupabaseBrowserClient().storage.from("products").remove(paths);
+      }
+    }
+
+    router.push("/admin/productos");
+    router.refresh();
   }
 
   async function handleEliminar() {
@@ -158,14 +164,16 @@ export default function ProductoForm({
 
     setError(null);
     setEnviando(true);
-    try {
-      await eliminarProducto(initialProduct.id, [...imagenes, ...imagenesAEliminar]);
-      router.push("/admin/productos");
-      router.refresh();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Error al eliminar el producto");
+    const resultado = await eliminarProducto(initialProduct.id, [...imagenes, ...imagenesAEliminar]);
+
+    if (resultado.error) {
+      setError(resultado.error);
       setEnviando(false);
+      return;
     }
+
+    router.push("/admin/productos");
+    router.refresh();
   }
 
   return (
@@ -197,6 +205,7 @@ export default function ProductoForm({
           <input
             type="number"
             min={0}
+            max={99999999.99}
             step="0.01"
             required
             value={precio}
