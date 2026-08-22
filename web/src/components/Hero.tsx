@@ -1,8 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import FadeIn from "@/components/FadeIn";
+import { getHeroImageUrl } from "@/lib/site-settings";
 
-export default function Hero() {
+export default async function Hero() {
+  const heroImageUrl = await getHeroImageUrl();
+
   return (
     <section className="border-b border-border">
       <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 sm:py-24 lg:grid-cols-2 lg:gap-16">
@@ -42,7 +45,7 @@ export default function Hero() {
             className="group relative block aspect-[4/5] overflow-hidden rounded-2xl"
           >
             <Image
-              src="https://jrlztkgegfvbudbqqkti.supabase.co/storage/v1/object/public/products/hero-background.jpg"
+              src={heroImageUrl}
               alt=""
               fill
               priority

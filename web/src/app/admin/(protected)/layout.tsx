@@ -52,6 +52,9 @@ export default async function AdminProtectedLayout({
               <Link href="/admin/productos" className="transition hover:text-foreground">
                 Productos
               </Link>
+              <Link href="/admin/configuracion" className="transition hover:text-foreground">
+                Configuración
+              </Link>
             </nav>
           </div>
           <form action={cerrarSesion}>
