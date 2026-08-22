@@ -26,6 +26,7 @@ export type OrderItem = {
 };
 
 export type OrderEstado = "pendiente" | "pagado" | "enviado" | "cancelado";
+export type MetodoPago = "transferencia" | "mercadopago";
 
 export type Order = {
   id: string;
@@ -33,6 +34,7 @@ export type Order = {
   items: OrderItem[];
   total: number;
   estado: OrderEstado;
+  metodo_pago: MetodoPago;
   mp_payment_id: string | null;
   created_at: string;
 };

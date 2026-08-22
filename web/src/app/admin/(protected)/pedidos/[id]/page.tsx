@@ -74,7 +74,9 @@ export default async function PedidoDetallePage({
       </div>
 
       <p className="mt-1 text-sm text-muted-foreground">
-        {formatoFecha.format(new Date(pedido.created_at))}
+        {formatoFecha.format(new Date(pedido.created_at))} ·{" "}
+        {pedido.metodo_pago === "mercadopago" ? "Mercado Pago" : "Transferencia"}
+        {pedido.mp_payment_id && ` (pago #${pedido.mp_payment_id})`}
       </p>
 
       <div className="mt-8 grid gap-8 sm:grid-cols-2">

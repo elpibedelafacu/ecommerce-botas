@@ -87,7 +87,8 @@ export default async function PedidosPage({
                   <p className="text-sm font-medium">{pedido.cliente?.nombre}</p>
                   <p className="mt-0.5 text-xs text-muted-foreground">
                     {formatoFecha.format(new Date(pedido.created_at))} · #
-                    {pedido.id.slice(0, 8)}
+                    {pedido.id.slice(0, 8)} ·{" "}
+                    {pedido.metodo_pago === "mercadopago" ? "Mercado Pago" : "Transferencia"}
                   </p>
                 </div>
                 <div className="flex shrink-0 items-center gap-4">
