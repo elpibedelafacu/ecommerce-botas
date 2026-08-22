@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCart } from "@/lib/cart-context";
 import { supabase } from "@/lib/supabase";
 import type { MetodoPago } from "@/lib/types";
+import { DESCUENTO_TRANSFERENCIA } from "@/lib/pricing";
 
 const formatoPrecio = new Intl.NumberFormat("es-AR", {
   style: "currency",
@@ -30,7 +31,10 @@ export default function CheckoutForm({
   const [metodoPago, setMetodoPago] = useState<MetodoPago>("transferencia");
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [pedidoId, setPedidoId] = useState<string | null>(null);
+  const [pedido, setPedido] = useState<{ id: string; total: number } | null>(null);
+
+  const totalConDescuento = total * (1 - DESCUENTO_TRANSFERENCIA);
+  const totalAMostrar = metodoPago === "transferencia" ? totalConDescuento : total;
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -43,26 +47,28 @@ export default function CheckoutForm({
       cantidad: i.cantidad,
     }));
 
-    const { data, error: rpcError } = await supabase.rpc("crear_pedido", {
-      p_cliente: cliente,
-      p_items: itemsPedido,
-      p_metodo_pago: metodoPago,
-    });
+    const { data, error: rpcError } = await supabase
+      .rpc("crear_pedido", {
+        p_cliente: cliente,
+        p_items: itemsPedido,
+        p_metodo_pago: metodoPago,
+      })
+      .single();
 
-    if (rpcError) {
-      setError(rpcError.message);
+    if (rpcError || !data) {
+      setError(rpcError?.message ?? "No se pudo crear el pedido.");
       setEnviando(false);
       return;
     }
 
-    const nuevoPedidoId = data as string;
+    const nuevoPedido = data as { id: string; total: number };
 
     if (metodoPago === "mercadopago") {
       try {
         const res = await fetch("/api/mercadopago/preferencia", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ orderId: nuevoPedidoId }),
+          body: JSON.stringify({ orderId: nuevoPedido.id }),
         });
         const json = await res.json();
 
@@ -84,12 +90,12 @@ export default function CheckoutForm({
       }
     }
 
-    setPedidoId(nuevoPedidoId);
+    setPedido(nuevoPedido);
     vaciarCarrito();
     setEnviando(false);
   }
 
-  if (pedidoId) {
+  if (pedido) {
     return (
       <main className="mx-auto flex max-w-xl flex-col items-center px-4 py-24 text-center">
         <h1 className="font-serif text-3xl">¡Gracias por tu compra!</h1>
@@ -98,8 +104,16 @@ export default function CheckoutForm({
           <span className="text-foreground">{cliente.email}</span> para coordinar la
           transferencia y el envío.
         </p>
-        <p className="mt-6 rounded-md border border-border px-4 py-2 text-xs uppercase tracking-[0.15em] text-muted-foreground">
-          Pedido #{pedidoId.slice(0, 8)}
+        <p className="mt-6 rounded-md border-2 border-gold bg-secondary px-5 py-3 text-center">
+          <span className="block text-xs uppercase tracking-[0.15em] text-muted-foreground">
+            Total a transferir
+          </span>
+          <span className="text-2xl font-semibold text-gold">
+            {formatoPrecio.format(pedido.total)}
+          </span>
+        </p>
+        <p className="mt-4 text-xs uppercase tracking-[0.15em] text-muted-foreground">
+          Pedido #{pedido.id.slice(0, 8)}
         </p>
         <Link
           href="/coleccion"
@@ -193,11 +207,13 @@ export default function CheckoutForm({
                 <p className="flex items-center gap-2 text-sm font-medium">
                   Transferencia bancaria
                   <span className="rounded-full bg-gold px-2 py-0.5 text-[10px] uppercase tracking-wide text-gold-foreground">
-                    Recomendado
+                    Ahorrá {DESCUENTO_TRANSFERENCIA * 100}%
                   </span>
                 </p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Te contactamos para coordinar la transferencia. Sin recargos.
+                  Te contactamos para coordinar la transferencia. Pagás{" "}
+                  {formatoPrecio.format(totalConDescuento)} en vez de{" "}
+                  {formatoPrecio.format(total)}.
                 </p>
               </div>
             </button>
@@ -215,7 +231,8 @@ export default function CheckoutForm({
                 <div className="flex-1">
                   <p className="text-sm font-medium">Pagar con tarjeta (Mercado Pago)</p>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    Débito, crédito o cuotas. Te lleva a Mercado Pago para pagar ahora.
+                    Débito, crédito o cuotas, sin descuento. Te lleva a Mercado Pago para
+                    pagar ahora.
                   </p>
                 </div>
               </button>
@@ -264,8 +281,23 @@ export default function CheckoutForm({
         </ul>
         <div className="mt-4 flex items-center justify-between">
           <span className="text-sm font-medium">Total</span>
-          <span className="text-lg font-semibold text-gold">{formatoPrecio.format(total)}</span>
+          <span className="flex items-baseline gap-2">
+            {metodoPago === "transferencia" && (
+              <span className="text-sm text-muted-foreground line-through">
+                {formatoPrecio.format(total)}
+              </span>
+            )}
+            <span className="text-lg font-semibold text-gold">
+              {formatoPrecio.format(totalAMostrar)}
+            </span>
+          </span>
         </div>
+        {metodoPago === "transferencia" && (
+          <p className="mt-1 text-right text-xs text-muted-foreground">
+            Ahorrás {formatoPrecio.format(total - totalConDescuento)} pagando por
+            transferencia
+          </p>
+        )}
       </div>
     </main>
   );
