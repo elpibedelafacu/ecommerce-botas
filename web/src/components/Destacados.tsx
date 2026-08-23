@@ -25,7 +25,7 @@ export default function Destacados({ products }: { products: Product[] }) {
           href="/coleccion"
           className="text-sm font-medium underline underline-offset-4 transition hover:text-primary"
         >
-          Ver colección completa →
+          Descubrí la colección →
         </Link>
       </div>
 
