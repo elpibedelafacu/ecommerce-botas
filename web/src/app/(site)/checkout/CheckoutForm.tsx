@@ -6,6 +6,7 @@ import { useCart } from "@/lib/cart-context";
 import { supabase } from "@/lib/supabase";
 import type { MetodoPago } from "@/lib/types";
 import { DESCUENTO_TRANSFERENCIA } from "@/lib/pricing";
+import type { DatosTransferencia } from "@/lib/site-settings";
 
 const formatoPrecio = new Intl.NumberFormat("es-AR", {
   style: "currency",
@@ -23,8 +24,10 @@ const clienteVacio: Cliente = { nombre: "", email: "", telefono: "", direccion: 
 
 export default function CheckoutForm({
   mercadoPagoDisponible,
+  datosTransferencia,
 }: {
   mercadoPagoDisponible: boolean;
+  datosTransferencia: DatosTransferencia;
 }) {
   const { items, total, vaciarCarrito } = useCart();
   const [cliente, setCliente] = useState<Cliente>(clienteVacio);
@@ -96,24 +99,56 @@ export default function CheckoutForm({
   }
 
   if (pedido) {
+    const hayDatosTransferencia = !!(datosTransferencia.alias || datosTransferencia.cbu);
+
     return (
       <main className="mx-auto flex max-w-xl flex-col items-center px-4 py-24 text-center">
         <h1 className="font-serif text-3xl">¡Gracias por tu compra!</h1>
         <p className="mt-3 text-sm text-muted-foreground">
-          Tu pedido fue registrado. Te vamos a contactar a{" "}
-          <span className="text-foreground">{cliente.email}</span> para coordinar la
-          transferencia y el envío.
+          {hayDatosTransferencia
+            ? "Transferí el monto a los datos de abajo. Apenas confirmemos el pago, coordinamos el envío."
+            : "Tu pedido fue registrado. Te vamos a contactar para coordinar la transferencia y el envío."}
         </p>
-        <p className="mt-6 rounded-md border-2 border-gold bg-secondary px-5 py-3 text-center">
+
+        <div className="mt-6 w-full rounded-md border-2 border-gold bg-secondary px-5 py-4 text-center">
           <span className="block text-xs uppercase tracking-[0.15em] text-muted-foreground">
             Total a transferir
           </span>
           <span className="text-2xl font-semibold text-gold">
             {formatoPrecio.format(pedido.total)}
           </span>
-        </p>
+
+          {hayDatosTransferencia && (
+            <dl className="mt-4 flex flex-col gap-2 border-t border-border pt-4 text-left text-sm">
+              {datosTransferencia.alias && (
+                <div className="flex items-center justify-between gap-3">
+                  <dt className="text-muted-foreground">Alias</dt>
+                  <dd className="font-medium">{datosTransferencia.alias}</dd>
+                </div>
+              )}
+              {datosTransferencia.cbu && (
+                <div className="flex items-center justify-between gap-3">
+                  <dt className="text-muted-foreground">CBU</dt>
+                  <dd className="font-medium">{datosTransferencia.cbu}</dd>
+                </div>
+              )}
+              {datosTransferencia.titular && (
+                <div className="flex items-center justify-between gap-3">
+                  <dt className="text-muted-foreground">Titular</dt>
+                  <dd className="font-medium">{datosTransferencia.titular}</dd>
+                </div>
+              )}
+            </dl>
+          )}
+        </div>
+
         <p className="mt-4 text-xs uppercase tracking-[0.15em] text-muted-foreground">
           Pedido #{pedido.id.slice(0, 8)}
+        </p>
+        <p className="mt-3 text-sm text-muted-foreground">
+          Mandanos el comprobante a{" "}
+          <span className="text-foreground">{cliente.email}</span> para agilizar la
+          confirmación.
         </p>
         <Link
           href="/coleccion"
@@ -211,7 +246,7 @@ export default function CheckoutForm({
                   </span>
                 </p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Te contactamos para coordinar la transferencia. Pagás{" "}
+                  Te mostramos el alias al confirmar. Pagás{" "}
                   {formatoPrecio.format(totalConDescuento)} en vez de{" "}
                   {formatoPrecio.format(total)}.
                 </p>

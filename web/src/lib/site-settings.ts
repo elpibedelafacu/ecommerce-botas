@@ -12,3 +12,24 @@ export async function getHeroImageUrl() {
 
   return data?.value ?? HERO_IMAGE_FALLBACK;
 }
+
+export type DatosTransferencia = {
+  alias: string | null;
+  cbu: string | null;
+  titular: string | null;
+};
+
+export async function getDatosTransferencia(): Promise<DatosTransferencia> {
+  const { data } = await supabase
+    .from("site_settings")
+    .select("key, value")
+    .in("key", ["transferencia_alias", "transferencia_cbu", "transferencia_titular"]);
+
+  const porClave = new Map((data ?? []).map((fila) => [fila.key, fila.value]));
+
+  return {
+    alias: porClave.get("transferencia_alias") ?? null,
+    cbu: porClave.get("transferencia_cbu") ?? null,
+    titular: porClave.get("transferencia_titular") ?? null,
+  };
+}

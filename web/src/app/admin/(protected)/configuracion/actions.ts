@@ -16,6 +16,32 @@ export async function actualizarHeroImagen(url: string) {
   return {};
 }
 
+export async function actualizarDatosTransferencia(datos: {
+  alias: string;
+  cbu: string;
+  titular: string;
+}) {
+  const supabase = await createSupabaseServerClient();
+
+  const filas = [
+    { key: "transferencia_alias", value: datos.alias.trim() || null },
+    { key: "transferencia_cbu", value: datos.cbu.trim() || null },
+    { key: "transferencia_titular", value: datos.titular.trim() || null },
+  ];
+
+  for (const fila of filas) {
+    const { error } = await supabase
+      .from("site_settings")
+      .update({ value: fila.value, updated_at: new Date().toISOString() })
+      .eq("key", fila.key);
+    if (error) return { error: error.message };
+  }
+
+  revalidatePath("/checkout");
+  revalidatePath("/admin/configuracion");
+  return {};
+}
+
 export async function actualizarDestacado(
   id: string,
   data: { destacado: boolean; precio: number }
