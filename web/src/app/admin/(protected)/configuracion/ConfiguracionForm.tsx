@@ -86,7 +86,7 @@ export default function ConfiguracionForm({
           accept="image/*"
           onChange={handleArchivo}
           disabled={subiendo}
-          className="mt-1 text-sm"
+          className="mt-1 text-sm text-muted-foreground file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-2 file:text-xs file:font-medium file:uppercase file:tracking-wide file:text-primary-foreground file:transition hover:file:opacity-90 disabled:cursor-not-allowed"
         />
         {subiendo && <p className="mt-1 text-xs text-muted-foreground">Subiendo...</p>}
       </label>
