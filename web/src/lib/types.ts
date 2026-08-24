@@ -11,6 +11,12 @@ export type Product = {
   created_at: string;
 };
 
+export type Category = {
+  id: string;
+  nombre: string;
+  created_at: string;
+};
+
 export type OrderCliente = {
   nombre: string;
   email: string;

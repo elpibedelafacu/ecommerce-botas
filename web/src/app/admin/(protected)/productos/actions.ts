@@ -17,13 +17,24 @@ export type ProductoInput = {
 
 export type ResultadoAccion = { error: string } | { error?: undefined };
 
+async function asegurarCategoria(
+  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
+  categoria: string | null
+) {
+  if (!categoria) return;
+  await supabase.from("categories").upsert({ nombre: categoria }, { onConflict: "nombre" });
+}
+
 export async function crearProducto(data: ProductoInput): Promise<ResultadoAccion> {
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.from("products").insert(data);
 
   if (error) return { error: error.message };
 
+  await asegurarCategoria(supabase, data.categoria);
+
   revalidatePath("/admin/productos");
+  revalidatePath("/admin/configuracion");
   revalidatePath("/");
   return {};
 }
@@ -44,8 +55,11 @@ export async function actualizarProducto(
     return { error: "No se pudo actualizar el producto (¿la sesión sigue activa?)" };
   }
 
+  await asegurarCategoria(supabase, data.categoria);
+
   revalidatePath("/admin/productos");
   revalidatePath(`/admin/productos/${id}`);
+  revalidatePath("/admin/configuracion");
   revalidatePath("/");
   return {};
 }

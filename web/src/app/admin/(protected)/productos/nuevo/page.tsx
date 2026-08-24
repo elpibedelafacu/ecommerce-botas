@@ -4,10 +4,8 @@ import ProductoForm from "../ProductoForm";
 
 export default async function NuevoProductoPage() {
   const supabase = await createSupabaseServerClient();
-  const { data: filas } = await supabase.from("products").select("categoria");
-  const categoriasExistentes = Array.from(
-    new Set((filas ?? []).map((f) => f.categoria).filter(Boolean))
-  ) as string[];
+  const { data: categorias } = await supabase.from("categories").select("nombre").order("nombre");
+  const categoriasExistentes = (categorias ?? []).map((c) => c.nombre);
 
   return (
     <div>

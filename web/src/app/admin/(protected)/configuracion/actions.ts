@@ -68,3 +68,71 @@ export async function actualizarDestacado(
   revalidatePath("/admin/configuracion");
   return {};
 }
+
+function revalidarCategorias() {
+  revalidatePath("/admin/configuracion");
+  revalidatePath("/admin/productos");
+  revalidatePath("/admin/productos/nuevo");
+  revalidatePath("/coleccion");
+  revalidatePath("/");
+}
+
+export async function crearCategoria(nombre: string) {
+  const limpio = nombre.trim();
+  if (!limpio) return { error: "El nombre no puede estar vacío." };
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from("categories").insert({ nombre: limpio });
+
+  if (error) {
+    if (error.code === "23505") {
+      return { error: "Ya existe una categoría con ese nombre." };
+    }
+    return { error: error.message };
+  }
+
+  revalidarCategorias();
+  return {};
+}
+
+export async function renombrarCategoria(id: string, nuevoNombre: string) {
+  const limpio = nuevoNombre.trim();
+  if (!limpio) return { error: "El nombre no puede estar vacío." };
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.rpc("renombrar_categoria", {
+    p_id: id,
+    p_nuevo_nombre: limpio,
+  });
+
+  if (error) {
+    if (error.code === "23505") {
+      return { error: "Ya existe una categoría con ese nombre." };
+    }
+    return { error: error.message };
+  }
+
+  revalidarCategorias();
+  return {};
+}
+
+export async function eliminarCategoria(id: string, nombre: string) {
+  const supabase = await createSupabaseServerClient();
+
+  const { count } = await supabase
+    .from("products")
+    .select("id", { count: "exact", head: true })
+    .eq("categoria", nombre);
+
+  if (count && count > 0) {
+    return {
+      error: `No se puede eliminar: ${count} producto${count === 1 ? "" : "s"} todavía usa${count === 1 ? "" : "n"} esta categoría.`,
+    };
+  }
+
+  const { error } = await supabase.from("categories").delete().eq("id", id);
+  if (error) return { error: error.message };
+
+  revalidarCategorias();
+  return {};
+}
