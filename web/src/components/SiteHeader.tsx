@@ -25,7 +25,7 @@ export default function SiteHeader() {
           href="/"
           className="font-serif text-xl tracking-wide sm:absolute sm:left-1/2 sm:-translate-x-1/2"
         >
-          Botas Store
+          Shekina
         </Link>
 
         <button

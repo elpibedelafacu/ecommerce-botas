@@ -43,7 +43,7 @@ export default async function AdminProtectedLayout({
         <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
           <div className="flex items-center gap-6">
             <Link href="/admin/pedidos" className="font-serif text-lg">
-              Botas Store · Admin
+              Shekina · Admin
             </Link>
             <nav className="flex gap-4 text-xs uppercase tracking-[0.15em] text-muted-foreground">
               <Link href="/admin/pedidos" className="transition hover:text-foreground">

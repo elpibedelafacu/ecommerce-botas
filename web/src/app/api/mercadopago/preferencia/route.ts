@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     const siteUrl = new URL(req.url).origin;
     const initPoint = await crearPreferenciaMP({
       orderId: pedido.id,
-      descripcion: `Pedido Botas Store #${pedido.id.slice(0, 8)}`,
+      descripcion: `Pedido Shekina #${pedido.id.slice(0, 8)}`,
       total: Number(pedido.total),
       siteUrl,
     });

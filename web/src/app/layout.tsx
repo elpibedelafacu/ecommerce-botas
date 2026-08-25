@@ -15,7 +15,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Botas Store",
+  title: "Shekina",
   description: "Catálogo de botas online",
 };
 
